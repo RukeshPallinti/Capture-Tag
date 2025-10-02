@@ -7,11 +7,26 @@ import requests
 
 app = Flask(__name__)
 
-# Initialize the custom model
-model_path = "best_model.h5"
-tokenizer_path = "tokenizer.pkl"
-img_desc_gen = ImageDescriptionGenerator(model_path, tokenizer_path)
+# -----------------------------
+# Download the model if not present
+# -----------------------------
+MODEL_URL = "https://huggingface.co/rukesh2507/twitter-caption-model/resolve/main/best_model.h5"
+MODEL_PATH = "best_model.h5"
+TOKENIZER_PATH = "tokenizer.pkl"
 
+if not os.path.exists(MODEL_PATH):
+    print("Downloading model from Hugging Face...")
+    r = requests.get(MODEL_URL)
+    with open(MODEL_PATH, "wb") as f:
+        f.write(r.content)
+    print("Model downloaded successfully.")
+
+# Initialize the custom model
+img_desc_gen = ImageDescriptionGenerator(MODEL_PATH, TOKENIZER_PATH)
+
+# -----------------------------
+# Flask Routes
+# -----------------------------
 @app.route('/')
 def index():
     posts = [
@@ -127,7 +142,6 @@ def upload():
 
         file = request.files['image']
 
-        # Ensure the file has an allowed extension if applicable
         allowed_extensions = {'png', 'jpg', 'jpeg'}
         if '.' in file.filename and file.filename.rsplit('.', 1)[1].lower() not in allowed_extensions:
             return jsonify({'error': 'Invalid file type'})
@@ -155,13 +169,13 @@ def hashtags():
         data = request.get_json()
 
         if 'hashtags' in data and isinstance(data['hashtags'], list) and len(data['hashtags']) > 0:
-            # Assuming process_sentence_and_get_hashtags is a function that processes the data
             new_hashtags = process_sentence_and_get_hashtags(data['hashtags'], data['description'])
             return jsonify({'hashtags': new_hashtags})
         else:
             return jsonify({'error': 'Hashtags has to be present in the body and should be a non-empty list.'})
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'})
+
 
 @app.route('/clarifai', methods=['POST'])
 def clarifai_api():
@@ -190,7 +204,7 @@ def clarifai_api():
 
         response = requests.post(url, headers=headers, json=data)
         response_data = response.json()
-        # Extract keywords from response
+
         keywords = []
         if 'outputs' in response_data:
             concepts = response_data['outputs'][0]['data'].get('concepts', [])
