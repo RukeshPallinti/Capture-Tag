@@ -186,7 +186,7 @@ def clarifai_api():
 
         url = 'https://api.clarifai.com/v2/models/general-image-recognition/versions/aa7f35c01e0642fda5cf400f543e7c40/outputs'
         headers = {
-            'Authorization': 'Key 55515e6e11b64f8e8f8f68f5c0140ab7',  # Replace with your real key
+            'Authorization': ,  # Replace with your real key
             'Content-Type': 'application/json'
         }
 
