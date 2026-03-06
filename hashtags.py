@@ -5,11 +5,6 @@ import requests
 import re
 import itertools
 
-# # Ensure these NLTK resources are downloaded
-#nltk.download('punkt')
-#nltk.download('averaged_perceptron_tagger')
-#nltk.download('stopwords')
-
 # Function for text analysis
 def analyze_text(sentence):
     tokens = word_tokenize(sentence)
@@ -120,10 +115,3 @@ def process_sentence_and_get_hashtags(hashtags, sentence):
                 sport = 'soccer'
                 return fetch_general_sport_match_details(sport)
               return fetch_general_sport_match_details(sport)
-
-# Example usage
-# sentence = "soccer"
-# hashtags = process_sentence_and_get_hashtags(sentence)
-
-# def getHastags(sentence):
-#    process_sentence_and_get_hashtags(sentence)
