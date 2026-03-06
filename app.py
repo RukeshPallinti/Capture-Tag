@@ -158,7 +158,7 @@ def apiverve_api():
 
         url = "https://api.apiverve.com/v1/imagecaption"
         headers = {
-            "X-API-Key": "apv_29e18e3e-44aa-4248-bc41-e03fe3d7dee2"
+            "X-API-Key": os.environ.get("APIVERSE_KEY")
         }
         response = requests.post(url, headers=headers, files={"image": ("image.jpg", img_io, "image/jpeg")})
         print(f"API status: {response.status_code}")
